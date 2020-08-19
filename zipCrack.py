@@ -10,6 +10,7 @@ from zipfile import ZipFile
 pass_count = 0
 
 passList = input('Enter the password list : ')
+zip_File_Name = input('Enter zip file : ')
 
 passData = []
 
@@ -22,26 +23,15 @@ with open(passList, 'r', encoding='utf-8', errors='ignore') as Data:
 
 def fetch(session, zipObj):
 
-    # print(session)
-
-    global count
-
-    count = count + 1
+    # print(zipObj)
 
     zipObj.extractall(pwd=bytes(session, 'utf-8'))
-    print (
-        'Password : ',
-        session,
-        ' -- Time Taken : ',
-        perf_counter() - t_t,
-        ' -- Password Count : ',
-        pass_count,
-        )
+    print ('Password : ', session, ' -- Time Taken : ', perf_counter()
+           - t_t)
 
 
 if __name__ == '__main__':
     with ThreadPoolExecutor(max_workers=500) as executor:
-        zipObj = ZipFile('testingFile.zip', 'r')
-        with ZipFile('testingFile.zip', 'r') as zipObj:
+        with ZipFile(zip_File_Name, 'r') as zipObj:
             executor.map(fetch, passData, [zipObj] * len(passData))
             executor.shutdown(wait=True)
